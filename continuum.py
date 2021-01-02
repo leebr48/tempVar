@@ -162,7 +162,7 @@ vmaxP = max(maxP)
 ymax = round(vmaxP+5,-1)
 plt.yticks(np.arange(0,ymax+1,tickstep))
 plt.ylim([0,ymax])
-plt.xlabel(r'Ligament Thickness $\mathrm{(a_o)}$')
+plt.xlabel(r'Ligament Thickness $(a_0)$')
 if args.dualcol:
     plt.legend(loc='upper right',ncol=2)
 else:

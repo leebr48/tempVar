@@ -227,7 +227,7 @@ for pick in choices:
                     rejoined = ''.join(restringed)
                     label += 'W('+rejoined+')'
                 if tag == 'r':
-                    label += r'$\mathrm{R=}$'+str(int(lab[i][2]))+r' $\mathrm{a_o}$'
+                    label += r'$\mathrm{R=}$'+str(int(lab[i][2]))+r' $a_0$'
                 if tag == 't':
                     label += r'$\mathrm{T=}$'+str(int(lab[i][3]))+' K'
                 if tag != args.zlabel[-1]:
@@ -295,7 +295,7 @@ for pick in choices:
 
 fig.set_figheight(figheight)
 fig.set_figwidth(figwidth)
-axs[-1].set_xlabel(r'Ligament Thickness $\mathrm{(a_o)}$')
+axs[-1].set_xlabel(r'Ligament Thickness $(a_0)$')
 if args.dualcol:
     axs[-1].legend(loc='lower right',ncol=2)
 else:
