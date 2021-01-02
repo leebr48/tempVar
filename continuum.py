@@ -13,18 +13,15 @@ datacol = 'grey'
 linecol = 'k'
 opacity = 0.2 #for grey data points
 tickstep = 10
+markerArea = 8 #Squared pixels
 
-plt.rcParams['font.family'] = 'Times'
+plt.rcParams['font.family'] = 'serif'
 plt.rcParams['mathtext.fontset'] = 'custom'
-plt.rcParams['mathtext.rm'] = 'Times'
-plt.rcParams['mathtext.it'] = 'Times:italic'
-plt.rcParams['mathtext.bf'] = 'Times:bold'
-plt.rcParams['font.cursive'] = 'Times'
-plt.rcParams['axes.unicode_minus']=False
+plt.rcParams['mathtext.rm'] = 'serif'
+plt.rcParams['mathtext.it'] = 'serif:italic'
+plt.rcParams['mathtext.bf'] = 'serif:bold'
 plt.rcParams['lines.linewidth'] = 0.8
 plt.rcParams.update({'font.size':10}) 
-
-markerArea = 8 #Squared pixels
 
 ao = {'500':3.17,'1000':3.183,'1200':3.189,'1500':3.199,'2000':3.214,'2500':3.229} #'temperature(K)':latPar(Angs)
 
@@ -114,7 +111,7 @@ df = a
 a = None
 
 aggIn = 'maxPress(bar)' 
-ylab = r'Relief Pressure $(GPa)$' 
+ylab = r'Relief Pressure (GPa)' 
 
 moreGrouping = ['temp(K)','Rs(ao)'] 
 dfMoreGrouped = df.groupby(by=moreGrouping)
@@ -165,7 +162,7 @@ vmaxP = max(maxP)
 ymax = round(vmaxP+5,-1)
 plt.yticks(np.arange(0,ymax+1,tickstep))
 plt.ylim([0,ymax])
-plt.xlabel(r'Ligament Thickness $(a_o)$')
+plt.xlabel(r'Ligament Thickness $\mathrm{(a_o)}$')
 if args.dualcol:
     plt.legend(loc='upper right',ncol=2)
 else:

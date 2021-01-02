@@ -13,18 +13,15 @@ linecol = 'k'
 opacity = 0.3
 Ptickstep = 5
 rhotickstep = 1
+markerArea = 8 #Squared pixels
 
-plt.rcParams['font.family'] = 'Times'
+plt.rcParams['font.family'] = 'serif'
 plt.rcParams['mathtext.fontset'] = 'custom'
-plt.rcParams['mathtext.rm'] = 'Times'
-plt.rcParams['mathtext.it'] = 'Times:italic'
-plt.rcParams['mathtext.bf'] = 'Times:bold'
-plt.rcParams['font.cursive'] = 'Times'
-plt.rcParams['axes.unicode_minus']=False
+plt.rcParams['mathtext.rm'] = 'serif'
+plt.rcParams['mathtext.it'] = 'serif:italic'
+plt.rcParams['mathtext.bf'] = 'serif:bold'
 plt.rcParams['lines.linewidth'] = 0.8
 plt.rcParams.update({'font.size':10}) 
-
-markerArea = 8 #Squared pixels
 
 ao = {'500':3.17,'1000':3.183,'1200':3.189,'1500':3.199,'2000':3.214,'2500':3.229} #'temperature(K)':latPar(Angs)
 
@@ -159,7 +156,7 @@ moreGrouping = ['bubShape','surfOrient','Rs(ao)','temp(K)','lig(ao)','runNum']
 dfMoreGrouped = df.groupby(by=moreGrouping)
 
 choice1 = ['maxPress(bar)','dens(nHe/nv)']
-choice2 = [r'Relief Pressure $(GPa)$',r'Relief Density $(n_{He}/n_{V})$']
+choice2 = [r'Relief Pressure (GPa)',r'Relief Density $\mathrm{\left(n_{He}/n_{V}\right)}$']
 
 choices = []
 if not args.yaxis:
@@ -230,9 +227,9 @@ for pick in choices:
                     rejoined = ''.join(restringed)
                     label += 'W('+rejoined+')'
                 if tag == 'r':
-                    label += r'$R=$'+str(int(lab[i][2]))+r' $a_o$'
+                    label += r'$\mathrm{R=}$'+str(int(lab[i][2]))+r' $\mathrm{a_o}$'
                 if tag == 't':
-                    label += r'$T=$'+str(int(lab[i][3]))+' K'
+                    label += r'$\mathrm{T=}$'+str(int(lab[i][3]))+' K'
                 if tag != args.zlabel[-1]:
                     label += ', '
         stacked = np.vstack((rawindplot[i],rawplot[i],radplot[i])).T
@@ -298,7 +295,7 @@ for pick in choices:
 
 fig.set_figheight(figheight)
 fig.set_figwidth(figwidth)
-axs[-1].set_xlabel(r'Ligament Thickness $(a_o)$')
+axs[-1].set_xlabel(r'Ligament Thickness $\mathrm{(a_o)}$')
 if args.dualcol:
     axs[-1].legend(loc='lower right',ncol=2)
 else:
