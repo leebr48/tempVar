@@ -11,8 +11,8 @@ minbulklig = 10 #ao
 meancol = 'k'
 datacol = 'grey'
 linecol = 'k'
-opacity = 0.2 #for grey data points
-tickstep = 10
+opacity = 1 #for grey data points
+tickstep = 20
 markerArea = 8 #Squared pixels
 
 plt.rcParams['font.family'] = 'serif'
@@ -33,8 +33,8 @@ parser.add_argument('-t','--temp', type = float, nargs = '*', help = 'Optional f
 parser.add_argument('-d','--display', action = 'store_true', default = False, help = 'Display the produced graph on the screen.', required = False)
 parser.add_argument('-i','--image', type = str, nargs = '*', help = 'Save the produced graph with the given name. INCLUDE a file extension (png or pdf). If you used the -c flag, you must supply three names. Otherwise, supply one name.', required = False) 
 parser.add_argument('--dualcol', action = 'store_true', default = False, help = 'Optional. Toggle on to split the figure legend into two columns.', required = False)
-parser.add_argument('--figheight', type = float, nargs = 1, default = 10, help = 'Optional. Specify the figure height in inches. Defaults to 10. Note that exact height may vary due to screen DPI.', required = False)
-parser.add_argument('--figwidth', type = float, nargs = 1, default = 18, help = 'Optional. Specify the figure width in inches. Defaults to 18. Note that exact width may vary due to screen DPI.', required = False)
+parser.add_argument('--figheight', type = float, nargs = 1, default = 3, help = 'Optional. Specify the figure height in inches. Defaults to 10. Note that exact height may vary due to screen DPI.', required = False)
+parser.add_argument('--figwidth', type = float, nargs = 1, default = 7, help = 'Optional. Specify the figure width in inches. Defaults to 18. Note that exact width may vary due to screen DPI.', required = False)
 parser.add_argument('--color', action = 'store_true', default = False, help = 'Optional. Make the plots in color rather than black and white.', required = False)
 args = parser.parse_args()
 #------------------------------------------------
