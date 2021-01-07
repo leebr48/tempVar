@@ -10,7 +10,7 @@ from itertools import cycle
 datacol = 'grey'
 meancol = 'k'
 linecol = 'k'
-opacity = 0.3
+opacity = 1
 Ptickstep = 5
 rhotickstep = 1
 markerArea = 8 #Squared pixels
