@@ -164,9 +164,9 @@ plt.yticks(np.arange(0,ymax+1,tickstep))
 plt.ylim([0,ymax])
 plt.xlabel(r'Bubble Radius $(a_0)$')
 if args.dualcol:
-    plt.legend(loc='upper right',ncol=2)
+    plt.legend(loc='upper right',ncol=2,borderpad=0.2,labelspacing=0.4,handletextpad=0.1,borderaxespad=0.2,columnspacing=0.1)
 else:
-    plt.legend(loc='upper right')
+    plt.legend(loc='upper right',borderpad=0.2,labelspacing=0.4,handletextpad=0.1,borderaxespad=0.2,columnspacing=0.1)
 if args.image:
     plt.savefig(args.image[0], bbox_inches = 'tight')
 if args.display:

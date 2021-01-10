@@ -11,8 +11,8 @@ datacol = 'grey'
 meancol = 'k'
 linecol = 'k'
 opacity = 1 #For the grey markers.
-Ptickstep = 5
-rhotickstep = 1
+Ptickstep = 10
+rhotickstep = 1 
 markerArea = 8 #Squared pixels
 
 plt.rcParams['font.family'] = 'serif'
@@ -21,7 +21,7 @@ plt.rcParams['mathtext.rm'] = 'serif'
 plt.rcParams['mathtext.it'] = 'serif:italic'
 plt.rcParams['mathtext.bf'] = 'serif:bold'
 plt.rcParams['lines.linewidth'] = 0.8
-plt.rcParams.update({'font.size':10}) 
+plt.rcParams.update({'font.size':8}) 
 
 ao = {'500':3.17,'1000':3.183,'1200':3.189,'1500':3.199,'2000':3.214,'2500':3.229} #'temperature(K)':latPar(Angs)
 
@@ -156,7 +156,7 @@ moreGrouping = ['bubShape','surfOrient','Rs(ao)','temp(K)','lig(ao)','runNum']
 dfMoreGrouped = df.groupby(by=moreGrouping)
 
 choice1 = ['maxPress(bar)','dens(nHe/nv)']
-choice2 = [r'Relief Pressure (GPa)',r'Relief Density $\mathrm{\left(n_{He}/n_{V}\right)}$']
+choice2 = [r'Relief Pressure (GPa)',r'Relief Density (He/V)']
 
 choices = []
 if not args.yaxis:
@@ -225,7 +225,7 @@ for pick in choices:
                     shuffled = sorted(inted, reverse=True)
                     restringed = [str(i) for i in shuffled]
                     rejoined = ''.join(restringed)
-                    label += 'W('+rejoined+')'
+                    label += 'W{'+rejoined+'}'
                 if tag == 'r':
                     label += r'$\mathrm{R=}$'+str(int(lab[i][2]))+r' $a_0$'
                 if tag == 't':
@@ -293,13 +293,14 @@ for pick in choices:
     axs[axind].set_ylim([0,ymax])
     axind +=1
 
-fig.set_figheight(figheight)
-fig.set_figwidth(figwidth)
+#fig.set_figheight(figheight)
+#fig.set_figwidth(figwidth)
+fig.set_size_inches(figwidth,figheight)
 axs[-1].set_xlabel(r'Ligament Thickness $(a_0)$')
 if args.dualcol:
-    axs[-1].legend(loc='lower right',ncol=2)
+    axs[-1].legend(loc='lower right',ncol=2,borderpad=0.2,labelspacing=0.4,handletextpad=0.1,borderaxespad=0.2,columnspacing=0.1)
 else:
-    axs[-1].legend(loc='lower right')
+    axs[-1].legend(loc='lower right',borderpad=0.2,labelspacing=0.4,handletextpad=0.1,borderaxespad=0.2,columnspacing=0.1)
 plt.subplots_adjust(hspace=0.2)
 if args.image:
     plt.savefig(args.image[0], bbox_inches = 'tight')
