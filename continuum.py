@@ -21,7 +21,7 @@ plt.rcParams['mathtext.rm'] = 'serif'
 plt.rcParams['mathtext.it'] = 'serif:italic'
 plt.rcParams['mathtext.bf'] = 'serif:bold'
 plt.rcParams['lines.linewidth'] = 0.8
-plt.rcParams.update({'font.size':10}) 
+plt.rcParams.update({'font.size':8}) 
 
 ao = {'500':3.17,'1000':3.183,'1200':3.189,'1500':3.199,'2000':3.214,'2500':3.229} #'temperature(K)':latPar(Angs)
 
