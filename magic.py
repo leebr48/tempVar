@@ -13,7 +13,8 @@ linecol = 'k'
 opacity = 1 #For the grey markers.
 Ptickstep = 10
 rhotickstep = 1 
-markerArea = 8 #Squared pixels
+dataMarkerArea = 1 #Squared pixels
+meanMarkerArea = 8 #Squared pixels
 
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['mathtext.fontset'] = 'custom'
@@ -275,8 +276,8 @@ for pick in choices:
             yavs.append(np.mean(matchingys)) 
         xcleaner = np.linspace(min(xclean),max(xclean),1000)
         predy = magic(aggIn,xcleaner,R,float(lab[i][3]),str(lab[i][1]))  
-        axs[axind].scatter(x,y,color=datacol,facecolors='none',marker=symplot,s=markerArea,alpha=opacity,zorder=1)
-        axs[axind].scatter(xclean,yavs,color=meancol,marker=symplot,label=label,s=markerArea,zorder=2)
+        axs[axind].scatter(x,y,color=datacol,facecolors='none',marker=symplot,s=dataMarkerArea,alpha=opacity,zorder=1)
+        axs[axind].scatter(xclean,yavs,color=meancol,marker=symplot,label=label,s=meanMarkerArea,zorder=2)
         axs[axind].plot(xcleaner,predy,color=linecol,linestyle='-',zorder=3)
         axs[axind].set_ylabel(ylab)
         axs[axind].xaxis.set_major_locator(MaxNLocator(integer=True,nbins=int(np.ceil(max(indplot[i])))))

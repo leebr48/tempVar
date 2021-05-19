@@ -8,12 +8,13 @@ import pickle as pkl
 from itertools import cycle
 
 minbulklig = 10 #ao
-meancol = 'k'
 datacol = 'grey'
+meancol = 'k'
 linecol = 'k'
 opacity = 1 #for grey data points
 tickstep = 20
-markerArea = 8 #Squared pixels
+dataMarkerArea = 1 #Squared pixels
+meanMarkerArea = 8 #Squared pixels
 
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['mathtext.fontset'] = 'custom'
@@ -149,8 +150,8 @@ for tempind in range(len(temps)):
         avgP = np.mean(pseries)
         maxP.append(max(pseries))
         radseries = [rad]*len(pseries)
-        plt.scatter(radseries,pseries,color=datacol,facecolors='none',marker=symplot,s=markerArea,alpha=opacity,zorder=1)
-        plt.scatter(rad,avgP,color=meancol,marker=symplot,s=markerArea,label=label if radind==0 else '',zorder=2)
+        plt.scatter(radseries,pseries,color=datacol,facecolors='none',marker=symplot,s=dataMarkerArea,alpha=opacity,zorder=1)
+        plt.scatter(rad,avgP,color=meancol,marker=symplot,s=meanMarkerArea,label=label if radind==0 else '',zorder=2)
     mypredy = magic(radrange,temp)  
     contpredy = cont(radrange,temp)
     maxP.append(max(contpredy))
