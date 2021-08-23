@@ -1,0 +1,51 @@
+These are functions that you attempted to use.
+
+    #FOR BOTH:
+    return K/(1+Q*np.exp(-B*l))**(1/v) #Fits great
+    This is a form of the "generalized logistic function". It's a cop-out, but it works. 
+    return K/(1+Q*np.exp(al*v*(l-l0)))**(1/v) is another form of the function above. 
+    return K/(1+Q*np.exp(-l))**(1/v) has one less fitting parameter and works very nearly as well as the above equations. 
+    return K/(1+Q*np.exp(-B*l)) is a very close second.
+    NOTE: THE GENERALIZED LOGISTIC FUNCTION BEATS GOMPERTZ AND TANH. 
+
+    #PRESSURE observations:
+    #return a*np.log(b*x)+c #Optimizer generates invalid values to try to force a fit - bad. 
+    return -a*np.exp(-b*x)+c #Excellent!!! 
+    #return a*(1-np.exp(-b*x)) #Works!!! Note this is a special case of the von Bertalanffy growth function! 
+    #return a*(x**(1/b))+c #R^2 is not terrible, but the residual plot shows definite patterns - not good. 
+    #return a*np.arctan(b*x)+c #Good, but exponent is better.  
+    #return a*np.arctan(b*x)+c*np.sin(d+(e)*x)+f #Doesn't fit at all.
+    #return a*np.arctan(b*x)+c*np.sin(d+(e*x)*x)+f #Probably not a better fit than arctan alone. 
+    #return a*np.arctan(b*x)+c*np.sin(d+(e*x**2)*x)+f #Better than previous, R^2 slightly lower than arctan alone but a bit better residual plot.
+    #return a - b/(c+d*np.exp(-e*x)) #Optimization failure 
+    #return a + b*x/(c+d*np.absolute(x)) #Not bad, but arctan and exponent are better.  
+    #return a*np.tanh(b*x+c)+d #Even BETTER than exponential, but won't go through (0,0)!!!
+    #return a*np.arctan(b*x+c)+d #Not bad.   
+    #return a*special.erf(b*x)+c #Pretty good! About like exponential, does not go through (0,0). 
+    #return a*(b+c*np.exp(-d*x))**(-e) #VERY good fit, comparable to tanh.  
+    #return a*(x**b)/np.sqrt(c+d*x**e) #Ok fit, but not the best.
+    #return a*x/np.sqrt(b+c*x**2) #Fits some datasets well but others very poorly.  
+    #CONCLUSION: a*(1-np.exp(-b*x)) works best to meet (0,0) BC, but it's not amazing. a*np.tanh(b*x+c)+d gives the best fit overall, but it does not satisfy the (0,0) BC.
+
+    #DENSITY observations:
+    #return a*np.log(b*x)+c #Optimizer generates invalid values to try to force a fit - bad.
+    return -a*np.exp(-b*x)+c #Does a pretty good job! 
+    #return a*(1-np.exp(-b*x)) #Bad fit - in other words, above expression violates (0,0) BC. 
+    #return a*(x**(1/b))+c #R^2 is terrible.
+    #return a*np.arctan(b*x)+c #Not bad - about like the general exponential, but actually satisfies the (0,0) BC.
+    #return a - b/(c+d*np.exp(-e*x)) #Epic fail 
+    #return a + b*x/(c+d*np.absolute(x)) #Some optimization failure. 
+    return a*np.tanh(b*x+c)+d #Excellent fit!!!
+    return a*np.arctan(b*x+c)+d #Excellent fit!!!
+    return a*special.erf(b*x+c)+d #Pretty good fit. 
+    return a*(b+c*np.exp(-d*x))**(-e) #Good fit, but has a minor optimization issue. !!!
+    return a*(x**b)/np.sqrt(c+d*x**e) #Good fit, but has a minor optimization issue. !!!
+    return a*x/np.sqrt(b+c*x**2) #Bad fit. 
+    return a*np.tanh(b*x+c) #Good fit, but definitely need all three fitting parameters. 
+    return a*np.arctan(b*x+c) #Kinda poor fit, definitely need all three fitting parameters. 
+    return a*special.erf(b*x)+c #Great fit, but definitely need all three fitting parameters
+    return a/(b+c*np.exp(-d*x)) #Fails for one line, great fit for the others.
+    return a*np.arctan(b*np.tanh(c*x)) #Okay fit, needs three params. (This is a modified form of the Gudermannian Function.) 
+    return a*np.exp(-b*np.exp(-c*x)) #Fits great, but will need bounds to prevent overflow.(This is the Gompertz Function.) For the life of me, I cannot make this go through (0,0), even with extra parameters.
+    return a*np.exp(-b*(c**x-d)) #Fits great, but will need bounds to prevent overflow. (This is another form of the Gompertz function.) For the life of me, I cannot make this go through (0,0), even with extra parameters.
+    CONCLUSION: a*np.tanh(b*x+c)+d works best, followed by a*np.arctan(b*x+c)+d, but neither satisfies (0,0) BC. a*np.exp(-b*np.exp(-c*x+d))+e has similar performance, but does not satisfy (0,0) BC either and requires an additional fitting parameter. 

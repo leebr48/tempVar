@@ -1,0 +1,48 @@
+# Helpful Variables
+variable t index 500 1000 1200 1500 2000 2500 
+variable l index 100000
+variable d equal 10 
+
+# Initialization 
+units metal
+dimension 3
+boundary p p p
+
+# Definitions
+lattice bcc 3.175 origin 0 0 0 orient x 1 0 0 orient y 0 1 0 orient z 0 0 1 
+region whole block 0 $d 0 $d 0 $d units lattice
+create_box 1 whole
+create_atoms 1 region whole
+
+# Force Fields
+variable pots string '/global/lammps/potentials'
+pair_style eam/fs 
+pair_coeff * * ${pots}/W_Juslin2010_AT_mod.eam.fs W 
+
+# Settings
+mass 1 183.841
+newton on
+timestep 0.001
+minimize 0 0 100000 1000000
+reset_timestep 0
+velocity all create $t 5989627 dist gaussian
+
+# Fixes
+variable length equal (lx+ly+lz)/3
+fix thermostat all npt temp $t $t $(100*dt) iso 0 0 $(100*dt) 
+fix avgLen all ave/time 1 1 1 v_length mode scalar ave window 1000 
+variable latPar equal f_avgLen/${d}
+thermo_style custom step temp etotal press v_latPar
+
+# Outputs
+thermo 10
+dump atomDump all atom 10000 dump_${t}K
+restart 50000 restart_${t}K
+log log_${t}K
+
+# Actions
+run $l
+print "Lattice parameter at ${t} K: ${latPar} Angstroms"
+clear 
+next t
+jump SELF 
