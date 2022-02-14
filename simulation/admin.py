@@ -1,6 +1,6 @@
 import re
 import random
-import numpy as np
+import math
 import os
 import sys 
 import subprocess
@@ -8,7 +8,7 @@ import argparse
 
 # Variables to alter.
 numRun = list(range(1,2,1)) #Number of runs to execute for each variable set. Enumerate these!!! 
-t = [500,1000,1500,2000,2500] #temperatures in Kelvin
+t = [1500] #temperatures in Kelvin
 orients = ['001'] #Surface orientations as a LIST. Choices: '001', '011', '111', and '310'.
 Rs = [3] #Spherical bubble radii. MULTIPLY by ao to get radii in Angstroms. Focusing on smaller bubbles (below continuum limit) is probably best. 
 l = [12] #Ligament thicknesses. MULTIPLY by ao to get thickness in Angstroms. Go down to 20 ao in the end!  
@@ -33,7 +33,7 @@ stepsToEq = 1000000 #Timesteps to let the system run with the thermostat on with
 betweenInsertionsPS = 5 #picoseconds between insertions
 betweenInsertionsTS = int(betweenInsertionsPS/ts) #timesteps between insertions
 betweenDumpsTS = int(10*betweenInsertionsTS) #timesteps between dumps
-betweenDumpsTSFast = int(np.floor(betweenDumpsTS/100))
+betweenDumpsTSFast = int(math.floor(betweenDumpsTS/100))
 betweenRestartsTS = int(10*betweenInsertionsTS) #timesteps between restarts
 betweenThermoTS = int(betweenInsertionsTS/100) #Timesteps between writing thermo data
 fullRunTS = int(runLength/betweenInsertionsPS*betweenInsertionsTS) #Total length of run in timesteps
@@ -111,7 +111,7 @@ if '310' in orients:
     orientsZ.append(orientZ310)
 
 def threshAtomsSphere(r):
-    return int(np.ceil(1.335*np.pi*r**2)) #CHECK this empirical approximation for 9ao bubbles!!!
+    return int(math.ceil(1.335*math.pi*r**2)) #CHECK this empirical approximation for 9ao bubbles!!!
 
 for runNum in numRun: 
     for temp in t:
@@ -143,7 +143,9 @@ for runNum in numRun:
                                 fileline.append(str(line))
                         fileline = fileline[0].split()
                         ao = float(fileline[1]) #Temperature-specific lattice parameter in Angstroms.    
-                        fileID = str(runNum) + '_' + str(temp)+'K_'+crystOrient+'_Rs'+str(sphR)+'ao_'+shp+'_lig'+str(lig)+'ao' #Unique name based on variables.    
+                        fileID = str(runNum) + '_' + str(temp)+'K_'+crystOrient+'_Rs'+str(sphR)+'ao_'+shp+'_lig'+str(lig)+'ao' #Unique name based on variables.
+                        if compFac:
+                            fileID = fileID + '_comp'
                         # Put file in appropriate directory. 
                         parent = os.getcwd()
                         subdir = parent + '/run_' + fileID 
@@ -271,7 +273,7 @@ for runNum in numRun:
                                         f.write('velocity all create ${{tempSet}} {:} dist gaussian\n'.format(random.randint(1,99999)))
                                     f.write('fix thermostat all nvt temp ${{tempSet}} ${{tempSet}} $({:}*dt)\n'.format(statDamp))
                                     if fileType == 'in':
-                                        f.write('run {:}\n'.format(int(np.ceil(1.5*stepsToEq))))
+                                        f.write('run {:}\n'.format(int(math.ceil(1.5*stepsToEq))))
                                         Xpos = random.uniform(xymod*ao/10,xymod*ao)
                                         Xneg = random.uniform(-1*xymod*ao,-1*xymod*ao/10)
                                         Ypos = random.uniform(xymod*ao/10,xymod*ao)
@@ -382,7 +384,7 @@ for runNum in numRun:
                                     f.write('variable countHe equal count(He)\n')
                                     f.write('fix linearP W momentum 1 linear 1 1 1\n')
                                     if fileType == 'in':
-                                        f.write('run {:}\n'.format(int(np.ceil(2*stepsToEq))))
+                                        f.write('run {:}\n'.format(int(math.ceil(2*stepsToEq))))
                                     f.write('variable topW equal bound(all,zmax)\n')
                                     if fileType == 'in':    
                                         f.write('variable punchyMin equal ${{topW}}+{:}*${{latPar}}\n'.format(punchMultip))
@@ -403,7 +405,7 @@ for runNum in numRun:
                                         f.write('# Add Lattice Strain\n')
                                         f.write('fix rescaleX all deform 1 x scale {:} remap x\n'.format(compFac))
                                         f.write('fix rescaleY all deform 1 y scale {:} remap x\n'.format(compFac))
-                                        f.write('run {:}\n\n'.format(int(np.ceil(2*stepsToEq)))) #FIXME does it need to be this long? Also, make sure no expansion happens during this phase!
+                                        f.write('run {:}\n\n'.format(int(math.ceil(2*stepsToEq)))) #FIXME does it need to be this long? Also, make sure no expansion happens during this phase!
 
                                     f.write('# Outputs\n')
                                     f.write('thermo_style custom step temp press etotal v_countHe v_bubPress\n') 
@@ -498,8 +500,6 @@ for runNum in numRun:
 
                                     # Create slurm files. 
                                     jobname = fileType + '_' + fileID
-                                    if compFac:
-                                        jobname = jobname + '_comp'
                                     filename = jobname + '.slurm'
                                     with open(filename, 'w') as f:
                                         f.write('#!/bin/bash\n')
