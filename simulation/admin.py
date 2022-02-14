@@ -7,11 +7,11 @@ import subprocess
 import argparse 
 
 # Variables to alter.
-numRun = list(range(46,48,1)) #Number of runs to execute for each variable set. Enumerate these!!! 
+numRun = list(range(1,2,1)) #Number of runs to execute for each variable set. Enumerate these!!! 
 t = [500,1000,1500,2000,2500] #temperatures in Kelvin
-orients = ['001','011'] #Surface orientations as a LIST. Choices: '001', '011', '111', and '310'.
-Rs = [1,2,3,4] #Spherical bubble radii. MULTIPLY by ao to get radii in Angstroms. Focusing on smaller bubbles (below continuum limit) is probably best. 
-l = [2,3,4,5,6] #Ligament thicknesses. MULTIPLY by ao to get thickness in Angstroms. Go down to 20 ao in the end!  
+orients = ['001'] #Surface orientations as a LIST. Choices: '001', '011', '111', and '310'.
+Rs = [3] #Spherical bubble radii. MULTIPLY by ao to get radii in Angstroms. Focusing on smaller bubbles (below continuum limit) is probably best. 
+l = [12] #Ligament thicknesses. MULTIPLY by ao to get thickness in Angstroms. Go down to 20 ao in the end!  
 singleLayer = False #Type 'True' to append an extra run to the 'l' list above, creating runs whose ligament is one atom thick. (Note that this thickness is surface-orientation dependent.) Type 'False' to use only the vaules for 'l' given above. 
 bubShape = ['sph'] #Specifies spherical bubble shape. ADD other bubble shapes to the list and CHANGE the switch case below. Hamond asked you to ignore anything but spherical bubbles for now.  
 machine = 'Lewis'
@@ -73,10 +73,16 @@ maxJobs = 2000 #Maximum number of jobs for any single user on Lewis.
 #----------------------------------------------------------------------------------------
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-s','--submit', action = 'store_true', help = 'Optional. If used, this flag will cause the program to submit one job for each infile in the set to LEWIS and submit a dependent read_restart program as well.', required = False) 
+parser.add_argument('-s','--submit', action = 'store_true', help = 'Optional. If used, this flag will cause the program to submit one job for each infile in the set to LEWIS and submit a dependent read_restart program as well.', required = False)
+parser.add_argument('-c','--compress', type = float, help = 'Optional. If used, applies the given multiplicative factor to scale both horizontal dimensions of the box (>1 is expansion, <1 is compression).', required = False, default = 0) #If using, values of 0.99 or 0.98 will probably suffice for our purposes.
 args = parser.parse_args()
 
 #----------------------------------------------------------------------------------------
+
+if args.compress != 0:
+    compFac = args.compress
+else:
+    compFac = False
 
 orientX001 = [1,0,0]; orientY001 = [0,1,0]; orientZ001 = [0,0,1]
 orientX011 = [0,-1,1]; orientY011 = [1,0,0]; orientZ011 = [0,1,1]
@@ -286,7 +292,7 @@ for runNum in numRun:
                                     f.write('variable pressVol equal 4/3*PI*(${pressR}^3)\n')
                                     if shp == 'sph':
                                         f.write('region bubble sphere ${SphCentX} ${SphCentY} ${SphCentZ} ${sphR} units box\n')
-                                        f.write('region pressReg sphere ${SphCentX} ${SphCentY} ${SphCentZ} ${pressR} units box\n')
+                                        f.write('region pressReg sphere ${SphCentX} ${SphCentY} ${SphCentZ} ${pressR} units box\n') #FIXME your region might get messed up after rescaling, check!
                                     #elif shp == 'ell':
                                         #Fix this section only if necessary. 
                                         #Rh = sphR*3**(1/3) #Ellipsoid horizontal radii in lattice units.
@@ -392,6 +398,13 @@ for runNum in numRun:
                                     f.write('region bottomReg block 0 ${blockSideX} 0 ${blockSideY} ${boxLow} ${punchyBottom} units box\n')
                                     f.write('group bottomGroup dynamic W region bottomReg every 1\n\n')
                                     
+                                    #This 'paragraph' was added after the rest and allows for compression/expansion of the lattice. #FIXME experimental bits
+                                    if compFac and fileType == 'in':
+                                        f.write('# Add Lattice Strain\n')
+                                        f.write('fix rescaleX all deform 1 x scale {:} remap x\n'.format(compFac))
+                                        f.write('fix rescaleY all deform 1 y scale {:} remap x\n'.format(compFac))
+                                        f.write('run {:}\n\n'.format(int(np.ceil(2*stepsToEq)))) #FIXME does it need to be this long? Also, make sure no expansion happens during this phase!
+
                                     f.write('# Outputs\n')
                                     f.write('thermo_style custom step temp press etotal v_countHe v_bubPress\n') 
                                     f.write('thermo {:}\n'.format(betweenThermoTS))
@@ -415,7 +428,7 @@ for runNum in numRun:
                                     f.write('variable timestep equal step\n')
                                     f.write('variable current_ts equal ${timestep}\n')
                                     f.write('fix freeze almostAll setforce 0 0 0\n')
-                                    f.write('create_atoms 2 single ${SphCentX} ${SphCentY} ${SphCentZ} units box\n')
+                                    f.write('create_atoms 2 single ${SphCentX} ${SphCentY} ${SphCentZ} units box\n') #FIXME changing the box might make atoms insert outside of bubble, be careful!
                                     f.write('minimize 0 0 {:} {:}\n'.format(HeMinIter,HeMinEvals))
                                     f.write('unfix freeze\n')
                                     f.write('print "Inserted ${loopVar2} He so far during the run phase."\n')
@@ -485,6 +498,8 @@ for runNum in numRun:
 
                                     # Create slurm files. 
                                     jobname = fileType + '_' + fileID
+                                    if compFac:
+                                        jobname = jobname + '_comp'
                                     filename = jobname + '.slurm'
                                     with open(filename, 'w') as f:
                                         f.write('#!/bin/bash\n')
@@ -503,7 +518,7 @@ for runNum in numRun:
                                         f.write('#SBATCH -n 24\n')
                                         f.write('#SBATCH --mem-per-cpu=8G\n')
                                         f.write('#SBATCH --mail-user=bfl3m8@mail.missouri.edu\n')
-                                        f.write('#SBATCH --mail-type=FAIL\n')
+                                        f.write('#SBATCH --mail-type=ALL\n')
                                         f.write('#SBATCH -o ' + jobname + '.out\n')
                                         f.write('#SBATCH -e ' + jobname + '.error\n')
                                         if fileType != 'in':
@@ -511,7 +526,7 @@ for runNum in numRun:
                                         else:
                                             f.write('\n')
 
-                                        f.write('unset MODULEPATH\n')
+                                        f.write('unset MODULEPATH\n') #FIXME: will these bits still work on Lewis?
                                         f.write('source /cluster/spack-2020/opt/spack/linux-centos7-x86_64/gcc-6.3.0/lmod-8.1.5-w5bf3f6lvfzxk6vmeaagqkjof47zl3yn/lmod/lmod/init/bash\n')
                                         f.write('module use /cluster/spack-2020/share/spack/lmod/linux-centos7-x86_64/Core\n')		
                                         f.write('module load intel/19.0.1-x86_64\n')
