@@ -403,8 +403,7 @@ for runNum in numRun:
                                     #This 'paragraph' was added after the rest and allows for compression/expansion of the lattice. #FIXME experimental bits
                                     if compFac and fileType == 'in':
                                         f.write('# Add Lattice Strain\n')
-                                        f.write('fix rescaleX all deform 1 x scale {:} remap x\n'.format(compFac))
-                                        f.write('fix rescaleY all deform 1 y scale {:} remap x\n'.format(compFac))
+                                        f.write('fix rescaleX all deform 1 x scale {:} y scale {:} remap x\n'.format(compFac,compFac))
                                         f.write('run {:}\n\n'.format(int(math.ceil(2*stepsToEq)))) #FIXME does it need to be this long? Also, make sure no expansion happens during this phase!
 
                                     f.write('# Outputs\n')
