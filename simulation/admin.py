@@ -145,7 +145,7 @@ for runNum in numRun:
                         ao = float(fileline[1]) #Temperature-specific lattice parameter in Angstroms.    
                         fileID = str(runNum) + '_' + str(temp)+'K_'+crystOrient+'_Rs'+str(sphR)+'ao_'+shp+'_lig'+str(lig)+'ao' #Unique name based on variables.
                         if compFac:
-                            fileID = fileID + '_comp'
+                            fileID = fileID + '_comp' + str(compFac)
                         # Put file in appropriate directory. 
                         parent = os.getcwd()
                         subdir = parent + '/run_' + fileID 
