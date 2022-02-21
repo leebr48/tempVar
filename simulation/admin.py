@@ -384,6 +384,8 @@ for runNum in numRun:
                                     f.write('variable countHe equal count(He)\n')
                                     f.write('fix linearP W momentum 1 linear 1 1 1\n')
                                     if fileType == 'in':
+                                        if compFac:
+                                            f.write('fix rescale all deform 1 x scale {:} y scale {:} remap x\n'.format(compFac,compFac))
                                         f.write('run {:}\n'.format(int(math.ceil(2*stepsToEq))))
                                     f.write('variable topW equal bound(all,zmax)\n')
                                     if fileType == 'in':    
@@ -399,12 +401,6 @@ for runNum in numRun:
                                         f.write('variable punchyBottom equal ${{bottomW}}-{:}*{:}*${{latPar}}\n'.format(punchMultipAdj,punchMultip)) #NOTE the adjusted 'catch' threshold. This may need to be adjusted. 
                                     f.write('region bottomReg block 0 ${blockSideX} 0 ${blockSideY} ${boxLow} ${punchyBottom} units box\n')
                                     f.write('group bottomGroup dynamic W region bottomReg every 1\n\n')
-                                    
-                                    #This 'paragraph' was added after the rest and allows for compression/expansion of the lattice. #FIXME experimental bits
-                                    if compFac and fileType == 'in':
-                                        f.write('# Add Lattice Strain\n')
-                                        f.write('fix rescaleX all deform 1 x scale {:} y scale {:} remap x\n'.format(compFac,compFac))
-                                        f.write('run {:}\n\n'.format(int(math.ceil(2*stepsToEq)))) #FIXME does it need to be this long? Also, make sure no expansion happens during this phase!
 
                                     f.write('# Outputs\n')
                                     f.write('thermo_style custom step temp press etotal v_countHe v_bubPress\n') 
