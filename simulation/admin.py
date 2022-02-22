@@ -386,6 +386,7 @@ for runNum in numRun:
                                     if fileType == 'in':
                                         if compFac:
                                             f.write('fix rescale all deform 1 x scale {:} y scale {:} remap x\n'.format(compFac,compFac))
+                                            f.write('run {:}\n'.format(int(math.ceil(2*stepsToEq))))
                                         f.write('run {:}\n'.format(int(math.ceil(2*stepsToEq))))
                                     f.write('variable topW equal bound(all,zmax)\n')
                                     if fileType == 'in':    
