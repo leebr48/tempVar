@@ -385,7 +385,7 @@ for runNum in numRun:
                                     f.write('fix linearP W momentum 1 linear 1 1 1\n')
                                     if fileType == 'in':
                                         if compFac:
-                                            f.write('fix rescale all deform 1 x scale {:} y scale {:} remap x\n'.format(compFac,compFac))
+                                            f.write('fix rescale all deform 10 x scale {:} y scale {:} remap x\n'.format(compFac,compFac))
                                             f.write('run {:}\n'.format(int(math.ceil(4*stepsToEq))))
                                         f.write('run {:}\n'.format(int(math.ceil(2*stepsToEq))))
                                     f.write('variable topW equal bound(all,zmax)\n')
