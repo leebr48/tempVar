@@ -1,0 +1,9 @@
+Put df pickle files for comp0.98 and comp0.99 in pickles folder.
+Run this (or similar): python3 magic.py -f ../pickles/absolutelyall.df.pkl -r 3 -o 001 -z t -i zTorig.png --figwidth 3.37 --figheight 3.8 --dualcol -l 0.4 0.5 1 2 3 4 5 6 7 8 9 10 11 12
+Run this (or similar): python3 magic_w_comp.py -f ../pickles/FIXMEPICKLENAME.df.pkl -r 3 -o 001 -z t -i zTnew.png --figwidth 3.37 --figheight 3.8 --dualcol -l 12
+Copy the files you just made to the desktop.
+Go to https://pinetools.com/overlay-images
+Upload the orig file as the main image and the new file as the secondary image.
+Turn on the two checkboxes about centering.
+Click Process!, and download the image as a png.
+Can add a second layer (in say, blue) if desired.
