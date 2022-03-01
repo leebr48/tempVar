@@ -7,8 +7,8 @@ import subprocess
 import argparse 
 
 # Variables to alter.
-numRun = list(range(1,2,1)) #Number of runs to execute for each variable set. Enumerate these!!! 
-t = [1500] #temperatures in Kelvin
+numRun = list(range(1,4,1)) #Number of runs to execute for each variable set. Enumerate these!!! 
+t = [500,1000,1500,2000,2500] #temperatures in Kelvin
 orients = ['001'] #Surface orientations as a LIST. Choices: '001', '011', '111', and '310'.
 Rs = [3] #Spherical bubble radii. MULTIPLY by ao to get radii in Angstroms. Focusing on smaller bubbles (below continuum limit) is probably best. 
 l = [12] #Ligament thicknesses. MULTIPLY by ao to get thickness in Angstroms. Go down to 20 ao in the end!  
@@ -386,7 +386,7 @@ for runNum in numRun:
                                     if fileType == 'in':
                                         if compFac:
                                             f.write('fix rescale all deform 1 x scale {:} y scale {:} remap x\n'.format(compFac,compFac))
-                                            f.write('run {:}\n'.format(int(math.ceil(2*stepsToEq))))
+                                            f.write('run {:}\n'.format(int(math.ceil(2*stepsToEq)))) #NOTE: you may need to make this run longer for big perturbations
                                             f.write('unfix rescale\n')
                                         f.write('run {:}\n'.format(int(math.ceil(2*stepsToEq))))
                                     f.write('variable topW equal bound(all,zmax)\n')
