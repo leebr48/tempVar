@@ -275,13 +275,14 @@ for pick in choices:
                 matchingys.append(y[index])
             yavs.append(np.mean(matchingys)) 
         xcleaner = np.linspace(min(xclean),max(xclean),1000)
-        predy = magic(aggIn,xcleaner,R,float(lab[i][3]),str(lab[i][1]))  
-        axs[axind].scatter(x,y,color=datacol,facecolors='none',marker=symplot,s=dataMarkerArea,alpha=opacity,zorder=1)
-        axs[axind].scatter(xclean,yavs,color=meancol,marker=symplot,label=label,s=meanMarkerArea,zorder=2)
-        axs[axind].plot(xcleaner,predy,color=linecol,linestyle='-',zorder=3)
+        #predy = magic(aggIn,xcleaner,R,float(lab[i][3]),str(lab[i][1])) 
+        axs[axind].scatter(x,y,color='red',facecolors='none',marker=symplot,s=dataMarkerArea,alpha=opacity,zorder=1)
+        #axs[axind].scatter(xclean,yavs,color=meancol,marker=symplot,label=label,s=meanMarkerArea,zorder=2)
+        #axs[axind].plot(xcleaner,predy,color=linecol,linestyle='-',zorder=3)
         axs[axind].set_ylabel(ylab)
         axs[axind].xaxis.set_major_locator(MaxNLocator(integer=True,nbins=int(np.ceil(max(indplot[i])))))
-        axs[axind].set_xlim([0,np.ceil(max(indplot[i]))+0.1])
+        #axs[axind].set_xlim([0,np.ceil(max(indplot[i]))+0.1])
+        axs[axind].set_xlim([0,12+0.1])
         ydatmaxes.append(max(y))
     ydatmax = max(ydatmaxes)
     if ydatmax > 10:
@@ -298,12 +299,12 @@ for pick in choices:
 #fig.set_figwidth(figwidth)
 fig.set_size_inches(figwidth,figheight)
 axs[-1].set_xlabel(r'Ligament Thickness $(a_0)$')
-if args.dualcol:
-    axs[-1].legend(loc='lower right',ncol=2,borderpad=0.2,labelspacing=0.4,handletextpad=0.1,borderaxespad=0.2,columnspacing=0.1)
-else:
-    axs[-1].legend(loc='lower right',borderpad=0.2,labelspacing=0.4,handletextpad=0.1,borderaxespad=0.2,columnspacing=0.1)
+#if args.dualcol:
+#    axs[-1].legend(loc='lower right',ncol=2,borderpad=0.2,labelspacing=0.4,handletextpad=0.1,borderaxespad=0.2,columnspacing=0.1)
+#else:
+#    axs[-1].legend(loc='lower right',borderpad=0.2,labelspacing=0.4,handletextpad=0.1,borderaxespad=0.2,columnspacing=0.1)
 plt.subplots_adjust(hspace=0.2)
 if args.image:
-    plt.savefig(args.image[0], bbox_inches = 'tight', dpi = 400)
+    plt.savefig(args.image[0], bbox_inches = 'tight', dpi = 400, transparent = True)
 if args.display:
     plt.show()
