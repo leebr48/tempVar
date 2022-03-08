@@ -276,7 +276,7 @@ for pick in choices:
             yavs.append(np.mean(matchingys)) 
         xcleaner = np.linspace(min(xclean),max(xclean),1000)
         #predy = magic(aggIn,xcleaner,R,float(lab[i][3]),str(lab[i][1])) 
-        axs[axind].scatter(x,y,color='red',facecolors='none',marker=symplot,s=dataMarkerArea,alpha=opacity,zorder=1)
+        axs[axind].scatter(x,y,color='blue',facecolors='none',marker=symplot,s=dataMarkerArea,alpha=opacity,zorder=1)
         #axs[axind].scatter(xclean,yavs,color=meancol,marker=symplot,label=label,s=meanMarkerArea,zorder=2)
         #axs[axind].plot(xcleaner,predy,color=linecol,linestyle='-',zorder=3)
         axs[axind].set_ylabel(ylab)
